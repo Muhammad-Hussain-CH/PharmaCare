@@ -1,7 +1,5 @@
-# Ignore environment files
-*.env
-# Node modules
 node_modules/
-# IDE files
+.env
+*.log
 .vscode/
 .DS_Store
