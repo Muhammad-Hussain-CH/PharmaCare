@@ -31,7 +31,7 @@ export default function WorkerLayout({ children }: { children: React.ReactNode }
         }}
       >
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-blue-600">PharmaCare POS</h1>
+          <h1 className="text-2xl font-bold text-[#7C3AED]">PharmaCare POS</h1>
           <span className="text-sm font-semibold text-gray-600">Worker</span>
         </div>
 

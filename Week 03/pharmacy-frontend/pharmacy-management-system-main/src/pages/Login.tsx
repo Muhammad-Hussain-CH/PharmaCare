@@ -55,7 +55,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-violet-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
         <BrandHeader />
 
@@ -78,7 +78,7 @@ export default function Login() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your username"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
               disabled={loading}
               required
             />
@@ -95,7 +95,7 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
               disabled={loading}
               required
             />
@@ -105,7 +105,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition"
+            className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition"
           >
             {loading ? 'Logging in...' : 'Log In'}
           </button>
@@ -117,7 +117,7 @@ export default function Login() {
             New owner?{' '}
             <button
               onClick={() => navigate('/signup')}
-              className="text-blue-600 hover:underline font-semibold"
+              className="text-[#7C3AED] hover:underline font-semibold"
             >
               Sign up here
             </button>

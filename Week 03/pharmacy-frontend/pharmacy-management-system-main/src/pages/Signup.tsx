@@ -99,7 +99,7 @@ export default function Signup() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-violet-100 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md">
         <BrandHeader />
 
@@ -122,7 +122,7 @@ export default function Signup() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="e.g., Muhammad Hussain"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED] text-sm"
               disabled={loading}
               required
             />
@@ -139,7 +139,7 @@ export default function Signup() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="e.g., owner1"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED] text-sm"
               disabled={loading}
               required
             />
@@ -156,7 +156,7 @@ export default function Signup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g., owner@pharmacy.com"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED] text-sm"
               disabled={loading}
             />
           </div>
@@ -172,7 +172,7 @@ export default function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Create a strong password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED] text-sm"
               disabled={loading}
               required
             />
@@ -189,7 +189,7 @@ export default function Signup() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter your password"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#7C3AED] text-sm"
               disabled={loading}
               required
             />
@@ -199,7 +199,7 @@ export default function Signup() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition mt-6"
+            className="w-full bg-[#7C3AED] hover:bg-[#6D28D9] disabled:bg-gray-400 text-white font-semibold py-2 px-4 rounded-lg transition mt-6"
           >
             {loading ? 'Creating Account...' : 'Create Owner Account'}
           </button>
@@ -211,7 +211,7 @@ export default function Signup() {
             Already have an account?{' '}
             <button
               onClick={() => navigate('/login')}
-              className="text-blue-600 hover:underline font-semibold"
+              className="text-[#7C3AED] hover:underline font-semibold"
             >
               Log in here
             </button>
