@@ -8,6 +8,7 @@ import { useTheme } from '../context/ThemeContext';
 import type { PharmacySettings } from '../data/sampleData';
 import ConfirmDialog from '../components/ConfirmDialog';
 import Modal         from '../components/Modal';
+import { createWorker } from '../api/services';
 
 export default function Settings() {
   const {
@@ -22,6 +23,10 @@ export default function Settings() {
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [clearInput,       setClearInput]       = useState('');
   const [showDeleteModal,  setShowDeleteModal]  = useState(false);
+  const [workerForm, setWorkerForm] = useState({ full_name: '', username: '', password: '' });
+  const [workerMessage, setWorkerMessage] = useState('');
+  const [workerError, setWorkerError] = useState('');
+  const [workerLoading, setWorkerLoading] = useState(false);
 
   // ── Field helpers ─────────────────────────────────────────────────────────
   function update(key: keyof PharmacySettings, value: unknown) {
@@ -134,6 +139,33 @@ export default function Settings() {
     e.target.value = '';
   }
 
+  async function handleCreateWorker(e: React.FormEvent) {
+    e.preventDefault();
+    setWorkerError('');
+    setWorkerMessage('');
+
+    if (!workerForm.full_name || !workerForm.username || !workerForm.password) {
+      setWorkerError('Full name, username, and password are required.');
+      return;
+    }
+
+    if (workerForm.password.length < 8) {
+      setWorkerError('Password must be at least 8 characters.');
+      return;
+    }
+
+    setWorkerLoading(true);
+    try {
+      await createWorker(workerForm.full_name, workerForm.username, workerForm.password);
+      setWorkerMessage('Worker account created successfully.');
+      setWorkerForm({ full_name: '', username: '', password: '' });
+    } catch (err: any) {
+      setWorkerError(err.response?.data?.error || 'Failed to create worker account.');
+    } finally {
+      setWorkerLoading(false);
+    }
+  }
+
   // ── Render ────────────────────────────────────────────────────────────────
   return (
     <div className="grid grid-cols-5 gap-6">
@@ -244,6 +276,71 @@ export default function Settings() {
             </div>
           </div>
           <SaveBtn label="Save Account" onSave={() => updateSettings(form)} />
+        </div>
+
+        {/* Worker Account Management */}
+        <div className={cardClass()} style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(124,58,237,0.06)' }}>
+          <CardHeader icon={User} title="Create Worker Account" color="#0EA5E9" />
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            Create a worker account that can log in to the POS screen only.
+          </p>
+
+          <form onSubmit={handleCreateWorker} className="space-y-4">
+            {workerError && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {workerError}
+              </div>
+            )}
+            {workerMessage && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
+                {workerMessage}
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Full Name</label>
+              <input
+                type="text"
+                value={workerForm.full_name}
+                onChange={(e) => setWorkerForm((prev) => ({ ...prev, full_name: e.target.value }))}
+                className={inputClass(true)}
+                placeholder="e.g. Ali Ahmed"
+                disabled={workerLoading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Username</label>
+              <input
+                type="text"
+                value={workerForm.username}
+                onChange={(e) => setWorkerForm((prev) => ({ ...prev, username: e.target.value }))}
+                className={inputClass(true)}
+                placeholder="e.g. worker1"
+                disabled={workerLoading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Password</label>
+              <input
+                type="password"
+                value={workerForm.password}
+                onChange={(e) => setWorkerForm((prev) => ({ ...prev, password: e.target.value }))}
+                className={inputClass(true)}
+                placeholder="Minimum 8 characters"
+                disabled={workerLoading}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={workerLoading}
+              className="w-full px-5 py-2 text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 rounded-lg shadow-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {workerLoading ? 'Creating Worker...' : 'Create Worker'}
+            </button>
+          </form>
         </div>
       </div>
 

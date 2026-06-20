@@ -46,3 +46,32 @@ html.dark .skeleton { background-color: #2d2b45; }
 }
 .toast-in { animation: toast-in 300ms ease-out forwards; }
 .toast-out { animation: toast-out 300ms ease-in forwards; }
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  .printable-receipt,
+  .printable-receipt * {
+    visibility: visible !important;
+  }
+
+  .printable-receipt {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}

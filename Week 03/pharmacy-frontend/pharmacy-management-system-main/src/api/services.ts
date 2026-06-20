@@ -4,6 +4,15 @@
 
 import API from './axios';
 
+// ── Authentication ───────────────────────────
+export const loginUser    = (username: string, password: string) => 
+  API.post('/auth/login', { username, password });
+export const signupOwner  = (full_name: string, username: string, email: string, password: string) => 
+  API.post('/auth/signup-owner', { full_name, username, email, password });
+export const getMe        = () => API.get('/auth/me');
+export const createWorker = (full_name: string, username: string, password: string) =>
+  API.post('/auth/create-worker', { full_name, username, password });
+
 // ── Dashboard ─────────────────────────────────
 export const getDashboardStats  = () => API.get('/dashboard/stats');
 export const getStockLevels     = () => API.get('/dashboard/stock-levels');
@@ -28,6 +37,12 @@ export const getOrders          = () => API.get('/orders');
 export const createOrder        = (data: object) => API.post('/orders', data);
 export const markDelivered      = (id: number) => API.put(`/orders/${id}/deliver`, {});
 
+// ── Sales / POS ──────────────────────────────
+export const createSale         = (data: object) => API.post('/sales', data);
+export const getSales           = (params?: Record<string, string>) => API.get('/sales', { params });
+export const getSaleById        = (id: number) => API.get(`/sales/${id}`);
+export const getSalesSummary    = (params?: Record<string, string>) => API.get('/sales/summary', { params });
+
 // ── Dispense ──────────────────────────────────
 export const getDispenseHistory = () => API.get('/dispense');
-export const dispenseMedicine   = (data: object) => API.post('/dispense', data)
+export const dispenseMedicine   = (data: object) => API.post('/dispense', data);

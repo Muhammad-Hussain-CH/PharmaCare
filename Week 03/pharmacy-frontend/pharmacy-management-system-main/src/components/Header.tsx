@@ -1,6 +1,7 @@
-import { Bell, Sun, Moon, Search } from 'lucide-react';
+import { Bell, Sun, Moon, Search, LogOut } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -16,10 +17,26 @@ const pageTitles: Record<string, string> = {
 export default function Header() {
   const { isDark, toggleTheme } = useTheme();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const title = Object.entries(pageTitles).find(([path]) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path)
   )?.[1] ?? 'PharmaCare';
+
+  const initials = user?.full_name
+    ? user.full_name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join('')
+    : 'MH';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
     <header
@@ -59,9 +76,18 @@ export default function Header() {
           </div>
         </button>
 
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-[#2A2238] transition-colors"
+          title="Logout"
+        >
+          <LogOut size={16} />
+          <span className="hidden sm:inline">Logout</span>
+        </button>
+
         {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-[#7C3AED] flex items-center justify-center">
-          <span className="text-white text-xs font-bold">MH</span>
+        <div className="w-8 h-8 rounded-full bg-[#7C3AED] flex items-center justify-center" title={user?.full_name || 'Logged in user'}>
+          <span className="text-white text-xs font-bold">{initials}</span>
         </div>
       </div>
     </header>

@@ -4,6 +4,8 @@ import {
   LayoutDashboard, Pill, Truck, ShoppingCart,
   ClipboardList, AlertTriangle, BarChart2, Settings, LogOut, Cross
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -33,6 +35,22 @@ function LogoArea() {
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  const initials = user?.full_name
+    ? user.full_name
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join('')
+    : 'MH';
 
   return (
     <div
@@ -95,18 +113,24 @@ export default function Sidebar() {
       {/* User */}
       <div className="px-4 pb-5">
         <div className="border-t mb-4" style={{ borderColor: '#312E81' }} />
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mb-3">
           <div className="w-9 h-9 rounded-full bg-[#7C3AED] flex items-center justify-center shrink-0">
-            <span className="text-white text-sm font-bold">MH</span>
+            <span className="text-white text-sm font-bold">{initials}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="text-white text-sm font-medium leading-tight">Muhammad Hussain</div>
-            <div className="text-[11px]" style={{ color: '#C4B5FD' }}>Pharmacist</div>
+            <div className="text-white text-sm font-medium leading-tight truncate">{user?.full_name || 'Muhammad Hussain'}</div>
+            <div className="text-[11px]" style={{ color: '#C4B5FD' }}>{user?.role === 'owner' ? 'Owner' : 'Worker'}</div>
           </div>
-          <button className="text-[#C4B5FD] hover:text-white p-1 rounded transition-colors">
-            <LogOut size={16} />
-          </button>
         </div>
+
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors"
+          title="Logout"
+        >
+          <LogOut size={16} />
+          <span>Logout</span>
+        </button>
       </div>
     </div>
   );

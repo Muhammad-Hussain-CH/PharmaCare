@@ -20,11 +20,13 @@ app.use(cors({
 app.use(express.json());
 
 // ── Routes ────────────────────────────────────
+app.use('/api/auth',       require('./routes/auth'));
 app.use('/api/dashboard',  require('./routes/dashboard'));
 app.use('/api/medicines',  require('./routes/medicines'));
 app.use('/api/suppliers',  require('./routes/suppliers'));
 app.use('/api/orders',     require('./routes/orders'));
 app.use('/api/dispense',   require('./routes/dispense'));
+app.use('/api/sales',      require('./routes/sales'));
 
 // ── Health check ─────────────────────────────
 app.get('/api/health', (req, res) => {
