@@ -464,7 +464,7 @@ export default function Settings() {
             />
             <button
               onClick={() => document.getElementById('import-json-input')?.click()}
-              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors btn-press">
+              className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-white bg-[#7C3AED] hover:bg-[#6D28D9] rounded-lg transition-colors btn-press">
               <Upload size={16} /> Import Data from JSON
             </button>
 
