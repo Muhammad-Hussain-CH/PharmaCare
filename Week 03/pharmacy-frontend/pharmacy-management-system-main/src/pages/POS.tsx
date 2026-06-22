@@ -19,7 +19,8 @@ type MedicineOption = {
   expiry_date: string;
   batch_no: string;
   stock_qty: number;
-  low_stock_threshold: number;
+low_stock_threshold: number;
+units_per_pack: number;
   status: 'In Stock' | 'Low Stock' | 'Expired' | 'Out of Stock';
 };
 
@@ -27,8 +28,9 @@ type CartItem = {
   medicineId: number;
   name: string;
   unitPrice: number;
-  quantity: number;
+ quantity: number;
   stockQty: number;
+  unitsPerPack: number;
   status: MedicineOption['status'];
 };
 
@@ -120,6 +122,7 @@ export default function POS() {
         batch_no: string;
         stock_qty: number;
         low_stock_threshold: number;
+        units_per_pack: number;
         status: MedicineOption['status'];
       }) => ({
         medicine_id: m.medicine_id,
@@ -130,7 +133,8 @@ export default function POS() {
         expiry_date: m.expiry_date,
         batch_no: m.batch_no,
         stock_qty: Number(m.stock_qty),
-        low_stock_threshold: Number(m.low_stock_threshold),
+low_stock_threshold: Number(m.low_stock_threshold),
+units_per_pack: Number(m.units_per_pack) || 1,
         status: m.status,
       }));
 
@@ -204,7 +208,8 @@ export default function POS() {
           name: medicine.name,
           unitPrice: medicine.unit_price,
           quantity: 1,
-          stockQty: medicine.stock_qty,
+stockQty: medicine.stock_qty,
+unitsPerPack: medicine.units_per_pack,
           status: medicine.status,
         },
       ];
@@ -607,7 +612,14 @@ export default function POS() {
                       </div>
                       <div className="rounded-xl bg-gray-50 dark:bg-[#1A1730] p-3">
                         <div className="text-xs text-gray-500 dark:text-gray-400">Stock</div>
-                        <div className="font-bold text-gray-900 dark:text-white">{medicine.stock_qty}</div>
+                        <div className="font-bold text-gray-900 dark:text-white">
+  {medicine.stock_qty}
+  {medicine.units_per_pack > 1 && (
+    <span className="text-xs font-normal text-gray-400 ml-1">
+      units ({Math.floor(medicine.stock_qty / medicine.units_per_pack)} packs)
+    </span>
+  )}
+</div>
                       </div>
                       <div className="rounded-xl bg-gray-50 dark:bg-[#1A1730] p-3 col-span-2">
                         <div className="text-xs text-gray-500 dark:text-gray-400">Batch / Expiry</div>
@@ -763,6 +775,12 @@ export default function POS() {
                       <div className="text-right">
                         <div className="text-xs text-gray-500 dark:text-gray-400">Line total</div>
                         <div className="font-bold text-gray-900 dark:text-white">{money(item.unitPrice * item.quantity)}</div>
+                        {item.unitsPerPack > 1 && (
+  <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
+    {item.quantity} of {item.unitsPerPack} per pack
+    {' '}({(item.quantity / item.unitsPerPack).toFixed(2)} packs)
+  </div>
+)}
                       </div>
                     </div>
 
