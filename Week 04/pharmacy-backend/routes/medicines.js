@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
         m.unit_price,
         m.expiry_date,
         m.batch_no,
+        m.units_per_pack,
         c.name  AS category,
         mf.name AS manufacturer,
         sup.company_name AS supplier,
@@ -61,25 +62,26 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// POST /api/medicines — add new medicine
+
 // POST /api/medicines — add new medicine
 router.post('/', async (req, res) => {
   console.log('📥 Received POST /api/medicines body:', req.body);
 
   const {
-    category_id,
-    manufacturer_id,
-    supplier_id,
-    name,
-    dosage_form,
-    strength,
-    unit_price,
-    expiry_date,
-    batch_no,
-    description,
-    stock_quantity,
-    low_stock_threshold
-  } = req.body;
+  category_id,
+  manufacturer_id,
+  supplier_id,
+  name,
+  dosage_form,
+  strength,
+  unit_price,
+  expiry_date,
+  batch_no,
+  description,
+  stock_quantity,
+  low_stock_threshold,
+  units_per_pack
+} = req.body;
 
   // Validate required fields
   if (!name || !unit_price || !expiry_date || !batch_no) {
@@ -94,6 +96,7 @@ router.post('/', async (req, res) => {
   const supId  = Number(supplier_id)     || 1;
   const qty    = Number(stock_quantity)  || 0;
   const thresh = Number(low_stock_threshold) || 20;
+  const packSize = Number(units_per_pack) || 1;
 
   console.log('🔢 Parsed IDs:', { catId, mfrId, supId, qty, thresh });
 
@@ -102,14 +105,14 @@ router.post('/', async (req, res) => {
     await conn.beginTransaction();
 
     const [result] = await conn.query(`
-      INSERT INTO medicines
-        (category_id, manufacturer_id, supplier_id, name,
-         dosage_form, strength, unit_price, expiry_date,
-         batch_no, description)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `, [catId, mfrId, supId, name, dosage_form || 'Tablet',
-        strength || '', unit_price, expiry_date,
-        batch_no, description || '']);
+  INSERT INTO medicines
+    (category_id, manufacturer_id, supplier_id, name,
+     dosage_form, strength, unit_price, expiry_date,
+     batch_no, description, units_per_pack)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`, [catId, mfrId, supId, name, dosage_form || 'Tablet',
+    strength || '', unit_price, expiry_date,
+    batch_no, description || '', packSize]);
 
     const newMedicineId = result.insertId;
     console.log('✅ Medicine inserted with ID:', newMedicineId);
@@ -143,16 +146,18 @@ router.post('/', async (req, res) => {
 
 // PUT /api/medicines/:id — update medicine
 router.put('/:id', async (req, res) => {
-  const { name, dosage_form, strength, unit_price, 
-          expiry_date, batch_no, description } = req.body;
+  const { name, dosage_form, strength, unit_price,
+          expiry_date, batch_no, description, units_per_pack } = req.body;
   try {
     await db.query(`
       UPDATE medicines 
       SET name=?, dosage_form=?, strength=?, unit_price=?, 
-          expiry_date=?, batch_no=?, description=?
+          expiry_date=?, batch_no=?, description=?, units_per_pack=?
       WHERE medicine_id=?
-    `, [name, dosage_form, strength, unit_price, 
-        expiry_date, batch_no, description, req.params.id]);
+    `, [name, dosage_form, strength, unit_price,
+        expiry_date, batch_no, description,
+        Number(units_per_pack) || 1,
+        req.params.id]);
 
     res.json({ message: 'Medicine updated successfully' });
   } catch (err) {
