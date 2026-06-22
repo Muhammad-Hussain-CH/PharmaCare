@@ -22,6 +22,7 @@ const emptyForm = (): Omit<Medicine, 'id' | 'status'> => ({
   name: '', category: 'Tablet', manufacturer: '', supplierId: '',
   dosageForm: 'Tablet', strength: '', unitPrice: 0, stockQty: 0,
   lowStockThreshold: 20, expiryDate: '', batchNo: '', description: '',
+  unitsPerPack: 1,
 });
 
 export default function Medicines() {
@@ -167,19 +168,20 @@ export default function Medicines() {
         const supplierNumericId = getSupplierNumericId(form.supplierId); // default to supplier 1 if none selected
 
         await createMedicine({
-          category_id:         getCategoryId(form.category),
-          manufacturer_id:     1,
-          supplier_id:         supplierNumericId,
-          name:                form.name,
-          dosage_form:         form.dosageForm,
-          strength:            form.strength,
-          unit_price:          form.unitPrice,
-          expiry_date:         form.expiryDate,
-          batch_no:            form.batchNo,
-          description:         form.description,
-          stock_quantity:      form.stockQty,
-          low_stock_threshold: form.lowStockThreshold,
-        });
+  category_id:         getCategoryId(form.category),
+  manufacturer_id:     1,
+  supplier_id:         supplierNumericId,
+  name:                form.name,
+  dosage_form:         form.dosageForm,
+  strength:            form.strength,
+  unit_price:          form.unitPrice,
+  expiry_date:         form.expiryDate,
+  batch_no:            form.batchNo,
+  description:         form.description,
+  stock_quantity:      form.stockQty,
+  low_stock_threshold: form.lowStockThreshold,
+  units_per_pack:      form.unitsPerPack,
+});
       }
       // Refresh table from MySQL after save
       await refreshMedicines();
@@ -413,13 +415,14 @@ function getSupplierNumericId(supplierId: string): number {
           <div className="grid grid-cols-2 gap-4">
             {[
               { label: 'Medicine Name',       key: 'name',              type: 'text',   required: true  },
-              { label: 'Batch No',            key: 'batchNo',           type: 'text',   required: true  },
-              { label: 'Manufacturer',        key: 'manufacturer',      type: 'text',   required: true  },
-              { label: 'Strength',            key: 'strength',          type: 'text',   required: false },
-              { label: 'Unit Price (Rs.)',     key: 'unitPrice',         type: 'number', required: true  },
-              { label: 'Stock Quantity',       key: 'stockQty',          type: 'number', required: true  },
-              { label: 'Low Stock Threshold',  key: 'lowStockThreshold', type: 'number', required: false },
-              { label: 'Expiry Date',          key: 'expiryDate',        type: 'date',   required: true  },
+{ label: 'Batch No',            key: 'batchNo',           type: 'text',   required: true  },
+{ label: 'Manufacturer',        key: 'manufacturer',      type: 'text',   required: true  },
+{ label: 'Strength',            key: 'strength',          type: 'text',   required: false },
+{ label: 'Unit Price (Rs.)',     key: 'unitPrice',         type: 'number', required: true  },
+{ label: 'Stock Quantity',       key: 'stockQty',          type: 'number', required: true  },
+{ label: 'Low Stock Threshold',  key: 'lowStockThreshold', type: 'number', required: false },
+{ label: 'Units Per Pack',       key: 'unitsPerPack',      type: 'number', required: false },
+{ label: 'Expiry Date',          key: 'expiryDate',        type: 'date',   required: true  },
             ].map(({ label, key, type, required }) => (
               <div key={key}>
                 <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
