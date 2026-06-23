@@ -98,7 +98,10 @@ export default function POS() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
-  const [discountAmount, setDiscountAmount] = useState('0');
+  const [discountType, setDiscountType] =
+  useState<'amount' | 'percentage'>('amount');
+
+const [discountInput, setDiscountInput] = useState('0');
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card' | 'mobile'>('cash');
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'in-stock' | 'low-stock' | 'expired'>('all');
   const [loading, setLoading] = useState(true);
@@ -243,8 +246,15 @@ unitsPerPack: medicine.units_per_pack,
   }
 
   const subtotal = cartSubtotal;
-  const discountValue = Math.max(Number(discountAmount) || 0, 0);
-  const total = Math.max(subtotal - discountValue, 0);
+  const discountValue =
+  discountType === 'amount'
+    ? Math.max(Number(discountInput) || 0, 0)
+    : Math.min(
+        subtotal * ((Number(discountInput) || 0) / 100),
+        subtotal
+      );
+
+const total = Math.max(subtotal - discountValue, 0);
   const isCheckoutReady = cart.length > 0 && !submitting;
 
   async function handleCheckout() {
@@ -273,7 +283,8 @@ unitsPerPack: medicine.units_per_pack,
       setCart([]);
       setCustomerName('');
       setCustomerPhone('');
-      setDiscountAmount('0');
+      setDiscountInput('0');
+setDiscountType('amount');
       setPaymentMethod('cash');
       await loadMedicines();
     } catch (err: any) {
@@ -706,16 +717,56 @@ unitsPerPack: medicine.units_per_pack,
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1">Discount Amount</label>
-              <input
-                type="number"
-                min="0"
-                value={discountAmount}
-                onChange={(e) => setDiscountAmount(e.target.value)}
-                placeholder="0"
-                className="w-full rounded-xl border border-gray-200 dark:border-[#2D2B45] bg-white dark:bg-[#252240] px-4 py-3 text-sm text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-[#7C3AED]"
-              />
-            </div>
+  <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">
+    Discount
+  </label>
+
+  <div className="grid grid-cols-2 gap-2 mb-2">
+    <button
+      type="button"
+      onClick={() => setDiscountType('amount')}
+      className={`rounded-xl px-3 py-2 text-sm font-semibold ${
+        discountType === 'amount'
+          ? 'bg-[#7C3AED] text-white'
+          : 'bg-gray-100 text-gray-600'
+      }`}
+    >
+      Amount (PKR)
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setDiscountType('percentage')}
+      className={`rounded-xl px-3 py-2 text-sm font-semibold ${
+        discountType === 'percentage'
+          ? 'bg-[#7C3AED] text-white'
+          : 'bg-gray-100 text-gray-600'
+      }`}
+    >
+      Percentage (%)
+    </button>
+  </div>
+
+  <input
+    type="number"
+    min="0"
+    max={discountType === 'percentage' ? 100 : undefined}
+    value={discountInput}
+    onChange={(e) => setDiscountInput(e.target.value)}
+    placeholder={
+      discountType === 'amount'
+        ? 'Enter amount'
+        : 'Enter percentage'
+    }
+    className="w-full rounded-xl border border-gray-200 dark:border-[#2D2B45] bg-white dark:bg-[#252240] px-4 py-3 text-sm"
+  />
+
+  {discountType === 'percentage' && (
+    <p className="mt-2 text-xs text-gray-500">
+      Discount Amount: {money(discountValue)}
+    </p>
+  )}
+</div>
 
             <div className="rounded-2xl bg-gray-50 dark:bg-[#252240] p-4">
               <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300 mb-1">
@@ -800,7 +851,9 @@ unitsPerPack: medicine.units_per_pack,
               </div>
               <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
                 <span>Discount</span>
-                <span className="font-semibold text-gray-900 dark:text-white">{money(discountValue)}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{discountType === 'percentage'
+  ? `${discountInput}% (${money(discountValue)})`
+  : money(discountValue)}</span>
               </div>
               <div className="flex items-center justify-between border-t border-dashed border-gray-200 dark:border-[#2D2B45] pt-3">
                 <span className="text-base font-bold text-gray-900 dark:text-white">Estimated Total</span>
